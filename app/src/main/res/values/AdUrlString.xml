@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="adBlockUrl">
+        <item>yuyue008.cn</item>
+        <item>yuyue007.cn</item>
+        <item>yuyue006.cn</item>
+        <item>ssmuse1314</item>
+        <item>arrows-hitech</item>
+        <item>jianduankm</item>
+        <item>cnzz</item>
+        <item>yu-hui</item>
+        <item>cqli1.53c4rhgem</item>
+        <item>x3e.6qhbaxryz/</item>
+        <item>kong1.vqhtru6ef</item>
+        <item>kong1.vqhtru6ef</item>
+        <item>img.xiaohui2.cn</item>
+        <item>cdn.bootcss.com</item>
+        <item>www5.oss-cn-hangzhou.aliyuncs.com</item>
+    </string-array>
+
+    <string-array name="backup">
+        <item>cnzz.mmstat.com/9.gif</item>
+        <item>img3.yu-hui.com</item>
+        <item>http://img.yuyue007.cn/</item>
+        <item>http://img.yuyue007.cn/</item>
+        <item>cnzz.com</item>
+        <item>img3.yu-hui.com</item>
+
+        <item>ubmcmm.baidustatic.com</item>
+        <item>cpro2.baidustatic.com</item>
+        <item>cpro.baidustatic.com</item>
+        <item>s.lianmeng.360.cn</item>
+        <item>nsclick.baidu.com</item>
+        <item>pos.baidu.com</item>
+        <item>cbjs.baidu.com</item>
+        <item>cpro.baidu.com</item>
+        <item>images.sohu.com/cs/jsfile/js/c.js</item>
+        <item>union.sogou.com/</item>
+        <item>sogou.com/</item>
+        <item>a.baidu.com</item>
+        <item>http://www.yuyue008.cn/7028.js</item>
+        <item>yuyue008.cn</item>
+        <item>yuyue007.cn</item>
+        <item>yuyue006.cn</item>
+        <item>http://img.yuyue007.cn/</item>
+        <item>http://img.yuyue007.cn/</item>
+        <item>http://img.yuyue007.cn/a/2018-01-08/15154038018305.jpg</item>
+        <item>http://x3e.6qhbaxryz.com/bljz82/qsce.html?=ekua</item>
+        <item>http://x3e.6qhbaxryz.com/</item>
+        <item>http://kong1.vqhtru6ef.com/ry_187_T6/rytz.html</item>
+        <item>http://kong1.vqhtru6ef.com</item>
+
+    </string-array>
+</resources>
