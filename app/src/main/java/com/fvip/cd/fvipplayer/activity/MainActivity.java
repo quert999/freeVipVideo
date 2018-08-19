@@ -29,6 +29,12 @@ import com.fvip.cd.fvipplayer.utils.ADFilterTool;
 import com.fvip.cd.fvipplayer.utils.StringUtil;
 import com.google.gson.Gson;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -261,10 +267,6 @@ public class MainActivity extends AppCompatActivity {
             "\"url\": \"\"\n" +
             "},\n" +
             "{\n" +
-            "\"name\": \"万能接口5\",\n" +
-            "\"url\": \"http://jx.vgoodapi.com/jx.php?url=\"\n" +
-            "},\n" +
-            "{\n" +
             "\"name\": \"5月-8\",\n" +
             "\"url\": \"http://api.visaok.net/?url=\"\n" +
             "},\n" +
@@ -303,14 +305,6 @@ public class MainActivity extends AppCompatActivity {
             "{\n" +
             "\"name\": \"5月-18\",\n" +
             "\"url\": \"http://jx.618g.com/?url=\"\n" +
-            "},\n" +
-            "{\n" +
-            "\"name\": \"5月-20\",\n" +
-            "\"url\": \"hhttp://api.baiyug.cn/vip/?url=\"\n" +
-            "},\n" +
-            "{\n" +
-            "\"name\": \"5月-21\",\n" +
-            "\"url\": \"http://jiexi.071811.cc/jx2.php?url=\"\n" +
             "},\n" +
             "{\n" +
             "\"name\": \"5月-22\",\n" +
@@ -512,16 +506,48 @@ public class MainActivity extends AppCompatActivity {
         Pattern URL_PATTERN = Pattern.compile("\\?url=([^\"]+)\"");
 
         @JavascriptInterface
-        public void showSource(String html) {
+        public void showSource(final String html) {
             if (html == null || html.equals(lastHtml)) return;
             lastHtml = html;
-            Matcher matcher = URL_PATTERN.matcher(html);
-            if (matcher.find()) {
-                String url = matcher.group(1);
-                Intent intent = new Intent(MainActivity.this, VideoDetailActivity.class);
-                intent.putExtra("videourl", url);
-                startActivity(intent);
-                detailBack = true;
+            Elements elements = Jsoup.parse(html).select("iframe");
+            if (elements.size() > 0) {
+                final String iframeSrc = elements.first().attr("src");
+                if (iframeSrc.contains("?url=")){
+                    String url = iframeSrc.split("\\?url=")[1];
+                    if (url != null){
+                        if (url.contains("m3u8")){
+                            Intent intent = new Intent(MainActivity.this, VideoDetailActivity.class);
+                            intent.putExtra("videourl", url);
+                            startActivity(intent);
+                            detailBack = true;
+                        }else {
+                            if (!iframeSrc.startsWith("http")) return;
+                            new Thread(){
+                                @Override
+                                public void run() {
+                                    try {
+                                        Document iframeDoc = Jsoup.connect(iframeSrc).get();
+                                        Elements elementsIframe = iframeDoc.select("#player");
+                                        if (elementsIframe.size() > 0){
+                                            String iframeSrcTrue = elementsIframe.first().attr("src");
+                                            if (!isFinishing() && html.equals(lastHtml) && iframeSrcTrue != null && iframeSrcTrue.contains("?url=")){
+                                                String urlTrue = iframeSrcTrue.split("\\?url=")[1];
+                                                if (urlTrue != null && urlTrue.contains("m3u8")){
+                                                    Intent intent = new Intent(MainActivity.this, VideoDetailActivity.class);
+                                                    intent.putExtra("videourl", urlTrue);
+                                                    startActivity(intent);
+                                                    detailBack = true;
+                                                }
+                                            }
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }.start();
+                        }
+                    }
+                }
             }
         }
     }
