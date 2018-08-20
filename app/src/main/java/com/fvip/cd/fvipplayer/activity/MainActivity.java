@@ -3,6 +3,7 @@ package com.fvip.cd.fvipplayer.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -46,7 +47,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private WebView webView;
+    private WebView webView,webViewIframe;
     private String url = "https://v.qq.com/";
     private List<PlaylistBean.PlatformlistBean> mLeftListData = new ArrayList<>();
     private List<PlaylistBean.ListBean> mRightListData = new ArrayList<>();
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
         drawerLayout = findViewById(R.id.dl_layout);
         webView = findViewById(R.id.webview);
+        webViewIframe = findViewById(R.id.webview_iframe);
         lvLeft = findViewById(R.id.lv_left);
         lvRight = findViewById(R.id.lv_right);
         drawerLayout = findViewById(R.id.dl_layout);
@@ -101,6 +103,13 @@ public class MainActivity extends AppCompatActivity {
                                     int position, long id) {
                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {//如果此时抽屉窗口打开，就给他关闭
                     drawerLayout.closeDrawer(Gravity.LEFT);
+                }
+                if (position == mListData.size() - 1){
+//                    String cmd = "javascript:alert(document.getElementsByTagName('iframe')[0].innerHTML);";
+//                    webView.loadUrl(cmd);
+                    webView.loadUrl("javascript:window.local_obj.tap2Parse('<head>'+" +
+                            "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+                    return;
                 }
                 loadUrl(mListData.get(position).getUrl());
                 Toast.makeText(MainActivity.this, mListData.get(position).getName(), Toast.LENGTH_SHORT).show();
@@ -141,6 +150,28 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new MyWebViewClient());
         webView.addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
         loadUrl(url);
+
+
+        WebSettings settings = webViewIframe.getSettings();
+        settings.setDefaultTextEncodingName("utf-8");
+        settings.setJavaScriptEnabled(true);  //必须保留
+        settings.setDomStorageEnabled(true);//保留,否则无法播放优酷视频网页
+        webViewIframe.setWebChromeClient(new WebChromeClient());//重写一下
+        webViewIframe.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isFinishing()) return;
+                        webViewIframe.loadUrl("javascript:window.local_obj.iframeParse('<head>'+" +
+                                "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+                    }
+                },2000);
+            }
+        });
+        webViewIframe.addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
     }
 
     private void loadUrl(String url) {
@@ -259,6 +290,10 @@ public class MainActivity extends AppCompatActivity {
             "{\n" +
             "\"name\": \"电影天堂\",\n" +
             "\"url\": \"http://www.btbtdy.net/\"\n" +
+            "},\n" +
+            "{\n" +
+            "\"name\": \"手动解析\",\n" +
+            "\"url\": \"\"\n" +
             "}\n" +
             "],\n" +
             "\"list\": [\n" +
@@ -503,8 +538,6 @@ public class MainActivity extends AppCompatActivity {
     boolean detailBack;
 
     class InJavaScriptLocalObj {
-        Pattern URL_PATTERN = Pattern.compile("\\?url=([^\"]+)\"");
-
         @JavascriptInterface
         public void showSource(final String html) {
             if (html == null || html.equals(lastHtml)) return;
@@ -547,6 +580,42 @@ public class MainActivity extends AppCompatActivity {
                             }.start();
                         }
                     }
+                }
+            }
+        }
+
+        @JavascriptInterface
+        public void tap2Parse(String html){
+            Elements elements = Jsoup.parse(html).select("video");
+            if (elements.size() > 0){
+                String url = elements.first().attr("src");
+                if (url != null && url.startsWith("http")){
+                    Intent intent = new Intent(MainActivity.this, VideoDetailActivity.class);
+                    intent.putExtra("videourl", url);
+                    startActivity(intent);
+                    detailBack = true;
+                }
+            }else{
+                Elements iframeElements = Jsoup.parse(html).select("iframe");
+                if (iframeElements.size() > 0){
+                    String iframeSrc = iframeElements.first().attr("src");
+                    if (iframeSrc == null) return;
+                    if (!iframeSrc.startsWith("http")) iframeSrc = "http://" + iframeSrc;
+                    webViewIframe.loadUrl(iframeSrc);
+                }
+            }
+        }
+
+        @JavascriptInterface
+        public void iframeParse(String html){
+            Elements elements = Jsoup.parse(html).select("video");
+            if (elements.size() > 0){
+                String url = elements.first().attr("src");
+                if (url != null && url.startsWith("http")){
+                    Intent intent = new Intent(MainActivity.this, VideoDetailActivity.class);
+                    intent.putExtra("videourl", url);
+                    startActivity(intent);
+                    detailBack = true;
                 }
             }
         }

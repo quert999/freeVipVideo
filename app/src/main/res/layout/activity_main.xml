@@ -28,7 +28,7 @@
                 android:visibility="gone"
                 />
 
-            <WebView
+            <com.fvip.cd.fvipplayer.widget.MainThreadWebview
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -57,5 +57,11 @@
         </ListView>
 
     </android.support.v4.widget.DrawerLayout>
+
+    <com.fvip.cd.fvipplayer.widget.MainThreadWebview
+        android:visibility="gone"
+        android:id="@+id/webview_iframe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

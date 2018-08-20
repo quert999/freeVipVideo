@@ -1,0 +1,221 @@
+<head><head>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=11">
+    <title>618G免费解析</title>
+    <style type="text/css">body,html,.content{background-color:black;padding: 0;margin: 0;width:100%;height:100%;color:#999;}</style>
+    <script src="//apps.bdimg.com/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/md/ckplayer/ckplayer.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="js/DPlayer.min.css">
+    <script type="text/javascript" src="js/DPlayer.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/hls.min.js"></script>
+    <script type="text/javascript" src="js/md5.min.js"></script>
+    <script type="text/javascript" src="js/mdparse_help.js?ver=201800525"></script>
+    <script type="text/javascript" src="tools.js?ver=20171118"></script>
+    <script type="text/javascript">
+var WWW_URL='http://jx.618g.com/md/';
+var weParserParams;
+function player(){
+	$.post("url.php", {"id": "https://v.qq.com/x/cover/x/x90v161tdg3lrzl.html","type": "auto","siteuser": '',"md5": sign($('#hdMd5').val()),"hd":"","lg":""},
+	function(data){
+		if(data['msg'] == 200){
+			switch(data['site']){
+				case 'sohu':
+					document.createElement("img").src = "https://z.m.tv.sohu.com/h5_cc.gif?t=" + parseInt((new Date).getTime()) + "&uid=" + data['param']['uid'] + "&position=page_adbanner&op=click&details=%7B%7D&nid=&url=http%253A%252F%252Fm.tv.sohu.com%252Fus%252F209059447%252F" + data['vid'] + ".shtml&refer=http%253A%252F%252Fmy.tv.sohu.com%252Fus%252F209059447%252F" + data['vid'] + ".shtml&screen=1366x768&os=ios&platform=ipad&passport=&vid=" + data['vid'] + "&pid=6960285&channeled=1211020000&MTV_SRC=11060001";
+					document.createElement("img").src = "https://z.m.tv.sohu.com/h5_cc.gif?t=" + parseInt((new Date).getTime()) + "&uid=" + data['param']['uid'] + "&position=play_verify&op=click&details=%7B%7D&nid=&url=http%253A%252F%252Fm.tv.sohu.com%252Fus%252F209059447%252F" + data['vid'] + ".shtml&refer=http%253A%252F%252Fmy.tv.sohu.com%252Fus%252F209059447%252F" + data['vid'] + ".shtml&screen=1366x768&os=ios&platform=ipad&passport=&vid=" + data['vid'] + "&pid=6960285&channeled=1211020000&MTV_SRC=11060001";
+					setInterval(function() {
+						document.createElement("img").src = "https://z.m.tv.sohu.com/h5_cc.gif?t=" + parseInt((new Date).getTime()) + "&uid=" + data['param']['uid'] + "&position=page_adbanner_success&op=click&details=%7B%7D&nid=&url=http%253A%252F%252Fm.tv.sohu.com%252Fus%252F209059447%252F" + data['vid'] + ".shtml&refer=http%253A%252F%252Fmy.tv.sohu.com%252Fus%252F209059447%252F" + data['vid'] + ".shtml&screen=1366x768&os=ios&platform=ipad&passport=&vid=" + data['vid'] + "&pid=6960285&channeled=1211020000&MTV_SRC=11060001";
+					}, 60 * 1000)
+				break;
+			}
+			if(data['ext']=='link'){
+				document.getElementById('a1').innerHTML = '<iframe width="100%" height="100%" allowFullScreen="true" allowTransparency="true" frameborder="0" scrolling="no" src="'+data['url']+'"></iframe>';
+			}else if(data['ext']=='hls' && data['p2p']=='1'){
+				MdparseTools.GetScript('//mdparser.duapp.com/p2p.js?ver=200180525',function(){
+					MdparseTools.GetScript('//mdparser.duapp.com/hls.plugin.js?ver=201800525',function(){
+						var dplayer = new DPlayer({
+							element: document.getElementById("a1"),
+							autoplay: true,
+							video: {
+								url: vid,
+								type: 'hls'
+							}
+						});
+						if(MdparseTools.Status.isMobile){
+							$('<div class="content" id="divBag" style="position: fixed;left: 0px;top: 0px;z-index: 1;background-image: url(image/play.png);background-repeat: no-repeat;background-position: 50% 50%;"></div>').appendTo($('body'));
+							$('#divBag').on('click',function(){
+								dplayer.play();
+								$(this).remove();
+							});
+						}
+						MdparseTools.P2P.ShowP2PInfo();
+					});
+				});
+			}else if(MdparseTools.Status.isMobile || data['ext']=='h5'){
+				if(data['ext']=='xml_client'){
+					weParserParams=data;
+					var weParserJS = document.createElement("script");
+					weParserJS.type = "text/javascript";
+					weParserJS.src = data['weparser_js_url'];
+					document.getElementsByTagName("head")[0].appendChild(weParserJS);
+				}else{
+					document.getElementById('a1').innerHTML = '<video src="'+data['url']+'" controls="controls" width="100%" height="100%" poster="image/loading_wap.gif"></video>';
+                    $('<div class="content" id="divBag" style="position: fixed;left: 0px;top: 0px;z-index: 1;background-color: rgba(0,0,0,0);"></div>').appendTo($('body'));
+                    $('#divBag').on('click',function(){
+                    $('video').get(0).play();
+                    $(this).remove();
+                    });
+				}
+			}else if(data['ext']=='mp4'){
+				var uaAutoScroll = navigator.userAgent.toLowerCase();
+				if (uaAutoScroll.indexOf("msie") > -1 || uaAutoScroll.indexOf("rv:11") > -1) {
+					var flashvars={f:data['url'],c:0,p:1,v:100,h:1,e:0,my_title:GetQueryString('title')};
+					var params={bgcolor:'#FFF',allowFullScreen:true,allowScriptAccess:'always',wmode:'transparent'};
+					CKobject.embedSWF('/md/ckplayer/ckplayer.swf','a1','ckplayer_a1','100%','100%',flashvars,params);
+				}else{
+					var dplayer = new DPlayer({
+						element: document.getElementById("a1"),
+						autoplay: true,
+						video: {
+							url: data['url'],
+							type: 'normal'
+						}
+					});
+				}
+			}else if(data['ext']=='hls' || data['ext']=='hls_list'){
+				var dplayer = new DPlayer({
+					element: document.getElementById("a1"),
+					autoplay: true,
+					video: {
+						url: decodeURIComponent(data['url']),
+						type: 'hls'
+					}
+				});
+			}else if(data['ext']=='client_parse'){
+
+			}else{
+				if(data['ext']=='m3u8' || data['ext']=='m3u8_list' || data['ext']=='m3u8_list_youku' || data['ext']=='m3u8_list_iqiyi'){
+					var flashvars={f:'/md/ckplayer/m3u8.swf',a:data['url'],c:0,s:4,lv:0,p:1,v:100,b:1,e:0,my_title:GetQueryString('title')}
+				}else if(data['ext']=='xml'){
+					var flashvars={f:data['url'],s:2,c:0,p:1,v:100,b:1,e:0,h:4,e:0,my_title:GetQueryString('title')};
+				}else if(data['ext']=='xml_client'){
+					var flashvars={f:data['url'],s:2,h:3,c:0,p:1,v:100,b:1,e:0,my_title:GetQueryString('title')};
+				}
+				var params={bgcolor:'#FFF',allowFullScreen:true,allowScriptAccess:'always',wmode:'transparent'};
+				CKobject.embedSWF('/md/ckplayer/ckplayer.swf','a1','ckplayer_a1','100%','100%',flashvars,params);
+			}
+			$('#loading').hide();
+			$('#a1').show();
+			return false;
+		}else{
+			$('#loading').hide();
+			$('#a1').hide();
+			$('#error').show();
+			if(data['msg']){
+				$('#error').html(data['msg']);
+			}else{
+				$('#error').html('亲!视频没有播放出来,请刷新一下!');
+			}
+		}
+	},"json");
+}
+
+$(function(){
+	eval("\x24\x28\x27\x23\x68\x64\x4d\x64\x35\x27\x29\x2e\x76\x61\x6c\x28\x27\x35\x39\x34\x64\x31\x30\x39\x63\x64\x61\x64\x62\x65\x33\x64\x65\x64\x62\x35\x61\x31\x61\x39\x31\x64\x61\x62\x39\x35\x63\x32\x33\x27\x29\x3b");
+	var vid=GetQueryString('id');
+	vid = decodeURIComponent(vid);
+	var type=GetQueryString('type');
+	if(location.href.indexOf('alicdn')>0 && type==null){
+		type='alicdn';
+	}else if(location.href.indexOf('.m3u8')>0 && type==null){
+		type='m3u8';
+	}else if(location.href.indexOf('.mp4')>0 && type==null){
+		type='mp4';
+	}
+	if(location.href.indexOf('#')>0 && location.href.indexOf('bilibili')){
+		location.href = location.href.replace('#','_');
+	}else if(type=='mp4'){
+		$('#loading').hide();
+		$('#a1').show();
+		if(MdparseTools.Status.isMobile){
+			document.getElementById('a1').innerHTML = '<video src="'+vid+'" controls="controls" autoplay="autoplay" width="100%" height="100%" poster="image/loading_wap.gif"></video>';
+		}else{
+			var uaAutoScroll = navigator.userAgent.toLowerCase();
+			if (uaAutoScroll.indexOf("msie") > -1 || uaAutoScroll.indexOf("rv:11") > -1) {
+				var flashvars={f:vid,c:0,p:1,v:100,h:1,e:0,my_title:GetQueryString('title')};
+				var params={bgcolor:'#FFF',allowFullScreen:true,allowScriptAccess:'always',wmode:'transparent'};
+				CKobject.embedSWF('/md/ckplayer/ckplayer.swf','a1','ckplayer_a1','100%','100%',flashvars,params);
+			}else{
+				var dplayer = new DPlayer({
+					element: document.getElementById("a1"),
+					autoplay: true,
+					video: {
+						url: vid,
+						type: 'normal'
+					}
+				});
+			}
+		}
+	}else if(type=="m3u8" || type=="hls"){
+		$('#loading').hide();
+		$('#a1').show();
+		if (type=='hls') {
+			MdparseTools.GetScript('//mdparser.duapp.com/p2p.js?ver=200180525',function(){
+				MdparseTools.GetScript('//mdparser.duapp.com/hls.plugin.js?ver=201800525',function(){
+					var dplayer = new DPlayer({
+						element: document.getElementById("a1"),
+						autoplay: true,
+						video: {
+							url: vid,
+							type: 'hls'
+						}
+					});
+					if(MdparseTools.Status.isMobile){
+						$('<div class="content" id="divBag" style="position: fixed;left: 0px;top: 0px;z-index: 1;background-image: url(image/play.png);background-repeat: no-repeat;background-position: 50% 50%;"></div>').appendTo($('body'));
+						$('#divBag').on('click',function(){
+							dplayer.play();
+							$(this).remove();
+						});
+					}
+					MdparseTools.P2P.ShowP2PInfo();
+				});
+			});
+		}else{
+			if(MdparseTools.Status.isMobile){
+				document.getElementById('a1').innerHTML = '<video src="'+vid+'" controls="controls" autoplay="autoplay" width="100%" height="100%" poster="image/loading_wap.gif"></video>';
+			}else{
+				var flashvars={f:'/md/ckplayer/m3u8.swf',a:encodeURIComponent(vid),c:0,s:4,lv:0,p:1,v:100,b:1,e:0,my_title:GetQueryString('title')};
+				var params={bgcolor:'#FFF',allowFullScreen:true,allowScriptAccess:'always',wmode:'transparent'};
+				CKobject.embedSWF('/md/ckplayer/ckplayer.swf','a1','ckplayer_a1','100%','100%',flashvars,params);
+			}
+		}
+
+	}else{
+		player();
+	}
+
+});
+
+function playerstop(){
+	var next =  location.href.toLowerCase().split('next=');
+	if(next.length>1 && next[1].indexOf('http')==0){
+		parent.location.href=next[1];
+	}else if(next.length>1){
+		alert(decodeURI(next[1]));
+	}
+}
+function GetQueryString(name){
+	 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	 var r = window.location.search.substr(1).match(reg);
+	 if(r!=null)return  r[2]; return null;
+}
+</script>
+</head>
+<body style="overflow-y:hidden;">
+<div id="loading" class="content" style="font-weight:bold;padding-top:90px;" align="center">正在加载播放中,请稍等...</div>
+<div id="a1" class="content" style="display:none;"></div>
+<div id="error" class="content" style="display:none;font-weight:bold;padding-top:90px;" align="center"></div>
+<input type="hidden" id="hdMd5" value="594d109cdadbe3dedb5a1a91dab95c23"><script type="text/javascript" src="/js/z.js"></script>
+
+</body></head>
