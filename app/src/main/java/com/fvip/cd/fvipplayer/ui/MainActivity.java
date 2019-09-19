@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     drawerLayout.closeDrawer(Gravity.START);
                 }
                 String title = webView.getTitle();
-                if (position == mListData.size() - 1) {
+                if (position == mListData.size()-2) {
                     String url = copyRightTheftUrl + webView.getUrl();
                     pd.show();
                     Observable.just(title + "`" + url)
@@ -198,11 +198,9 @@ public class MainActivity extends AppCompatActivity {
                             });
                     return;
                 }
-                /**
-                 * 以后如果有办法把其中播放链接提取出来，把这一段{"name": "已播放盗版网页提取","url": ""}加在左边的菜单栏里，这个position判断最后一个，上一个if判断倒数第二个
-                 */
-                if (position == mListData.size()) {
-                    webView.loadUrl("javascript:HTMLOUT.processHTML(document.documentElement.outerHTML);");
+
+                if (position == mListData.size()-1) {
+                    webView.loadUrl("javascript:HTMLOUT.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
                     return;
                 }
                 loadUrl(mListData.get(position).getUrl());
@@ -383,10 +381,19 @@ public class MainActivity extends AppCompatActivity {
                             .map(new Function<String, String>() {
                                 @Override
                                 public String apply(String s) throws Exception {
+                                    String url;
                                     Document document = Jsoup.parse(s);
-                                    String url = document.getElementsByTag("iframe").first().attr("src");
-                                    // TODO: 2019/9/19 这里又有分歧，有可能取到的src不是标准格式的
-                                    //示例： /m3u8.php?url=https://cn3.78love.cn/hls/20181127/895b494e08a7630d7a66d7d8a584d275/1543270542/index.m3u8
+                                    Element video = document.getElementsByTag("video").first();
+                                    if (video != null){
+                                        url = video.attr("src");
+                                        if (url.startsWith("//")){
+                                            url = "http:" + url;
+                                        }
+                                        return url;
+                                    }
+                                    url = document.getElementsByTag("iframe").first().attr("src");
+                                    // 有些视频可以直接获取到这种格式，else里走这种格式 https://www.heimijx.com/jx/api/?url=https://film.sohu.com/album/999486.html
+                                    // 示例：/m3u8.php?url=https://cn3.78love.cn/hls/20181127/895b494e08a7630d7a66d7d8a584d275/1543270542/index.m3u8
                                     if (url.startsWith("/m3u8.php?url=")){
                                         url = url.replace("/m3u8.php?url=","");
                                         return url;
