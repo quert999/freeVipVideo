@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (position == mListData.size()-1) {
+                if (position == mListData.size()-1) { //这个按钮只有一个作用，视频已经在盗版网页取到了，而且点击播放就可以开始播放，这时候点击这个按钮取出其中播放链接在原生播放器播放。暂时测试情况需要点击两次。
                     webView.loadUrl("javascript:HTMLOUT.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
                     return;
                 }
