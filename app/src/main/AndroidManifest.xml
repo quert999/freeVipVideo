@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.MainActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true">
             <intent-filter>
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.VideoDetailActivity"
+        <activity android:name=".ui.VideoDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"/>
     </application>

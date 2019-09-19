@@ -1,4 +1,4 @@
-package com.fvip.cd.fvipplayer.activity;
+package com.fvip.cd.fvipplayer.ui;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -17,13 +17,15 @@ import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
 public class VideoDetailActivity extends GSYBaseActivityDetail<StandardGSYVideoPlayer> {
     String url;
+    String title;
     StandardGSYVideoPlayer detailPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_detail);
-        url = getIntent().getExtras().getString("videourl", "");
+        url = getIntent().getExtras().getString("url", "");
+        title = getIntent().getExtras().getString("title", " ");
         ((TextView) findViewById(R.id.urltext)).setText(url);
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,10 +78,11 @@ public class VideoDetailActivity extends GSYBaseActivityDetail<StandardGSYVideoP
                 .setThumbImageView(imageView)
                 .setUrl(url)
                 .setCacheWithPlay(true)
-                .setVideoTitle(" ")
+                .setVideoTitle(title)
                 .setIsTouchWiget(true)
                 .setRotateViewAuto(false)
                 .setLockLand(false)
+                .setCacheWithPlay(false)
                 .setShowFullAnimation(false)
                 .setNeedLockFull(true)
                 .setSeekRatio(1);
