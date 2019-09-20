@@ -6,14 +6,20 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
@@ -30,6 +36,7 @@ import com.fvip.cd.fvipplayer.R;
 import com.fvip.cd.fvipplayer.adapter.ChannelListAdapter;
 import com.fvip.cd.fvipplayer.adapter.PlatformListAdapter;
 import com.fvip.cd.fvipplayer.bean.PlaylistBean;
+import com.fvip.cd.fvipplayer.widget.DragFloatingActionButton;
 import com.google.gson.Gson;
 import com.uber.autodispose.AutoDispose;
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView lvLeft;
     private ListView lvRight;
     private ProgressBar progressBar;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,19 +120,24 @@ public class MainActivity extends AppCompatActivity {
         lvLeft = findViewById(R.id.lv_left);
         lvRight = findViewById(R.id.lv_right);
         drawerLayout = findViewById(R.id.dl_layout);
-        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    //获取剪贴板管理器
-                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    // 创建普通字符型ClipData
-                    ClipData mClipData = ClipData.newPlainText("Label", webView.getUrl());
-                    // 将ClipData内容放到系统剪贴板里。
-                    cm.setPrimaryClip(mClipData);
-                    showToast("网址已复制到剪切板中");
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (isAppInstalled("com.UCMobile")) {
+                    goUC(webView.getUrl());
+                }else {
+                    try {
+                        //获取剪贴板管理器
+                        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        // 创建普通字符型ClipData
+                        ClipData mClipData = ClipData.newPlainText("Label", webView.getUrl());
+                        // 将ClipData内容放到系统剪贴板里。
+                        cm.setPrimaryClip(mClipData);
+                        showToast("网址已复制到剪切板中");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -337,6 +350,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        fab.post(new Runnable() {
+            @Override
+            public void run() {
+                fab.setX(getWindow().getDecorView().getWidth() - fab.getWidth() - DragFloatingActionButton.dp2px(15));
+            }
+        });
     }
 
     private void showToast(String msg) {
@@ -439,6 +458,35 @@ public class MainActivity extends AppCompatActivity {
                             });
                 }
             });
+        }
+    }
+
+    private void goUC(String url){
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+        intent.setData(uri);
+        intent.setClassName("com.UCMobile","com.UCMobile.main.UCMobile");//打开UC浏览器
+//        intent.setClassName("com.tencent.mtt","com.tencent.mtt.MainActivity");//打开QQ浏览器
+        startActivity(intent);
+    }
+
+    /**
+     * check the app is installed
+     */
+    public boolean isAppInstalled(String packageName) {
+        PackageInfo packageInfo;
+        ApplicationInfo applicationInfo = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(packageName, 0);
+            applicationInfo = getPackageManager().getApplicationInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            packageInfo = null;
+            e.printStackTrace();
+        }
+        if (packageInfo != null && applicationInfo != null && applicationInfo.enabled) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

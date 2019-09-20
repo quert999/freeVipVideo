@@ -1,6 +1,7 @@
 package com.fvip.cd.fvipplayer.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ public class DragFloatingActionButton extends FloatingActionButton {
     private final String TAG = "AttachButton";
     private boolean isDrug = false;
     private int mRootMeasuredWidth;
+    private int margin = dp2px(15);
 
     public DragFloatingActionButton(Context context) {
         this(context, null);
@@ -25,6 +27,13 @@ public class DragFloatingActionButton extends FloatingActionButton {
 
     public DragFloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        ViewGroup mViewGroup = (ViewGroup) getParent();
+        mRootMeasuredWidth = mViewGroup.getMeasuredWidth();
     }
 
     @Override
@@ -95,19 +104,24 @@ public class DragFloatingActionButton extends FloatingActionButton {
                     DragFloatingActionButton.this.animate()
                             .setInterpolator(new BounceInterpolator())
                             .setDuration(500)
-                            .x(0)
+                            .x(margin)
                             .start();
                 } else {
                     //向右贴边
                     DragFloatingActionButton.this.animate()
                             .setInterpolator(new BounceInterpolator())
                             .setDuration(500)
-                            .x(mRootMeasuredWidth - getWidth())
+                            .x(mRootMeasuredWidth - getWidth() - margin)
                             .start();
                 }
                 break;
         }
         //是否拦截事件
         return isDrug ? isDrug : super.onTouchEvent(ev);
+    }
+
+
+    public static int dp2px(float dpValue) {
+        return (int) (0.5f + dpValue * Resources.getSystem().getDisplayMetrics().density);
     }
 }
