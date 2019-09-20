@@ -58,9 +58,10 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class MainActivity extends AppCompatActivity {
+    private boolean isMobileUA = true;
     private MaterialDialog pd;
-    String copyRightTheftUrl = "https://660e.com/?url=";
-    String copyRightTheftDomain = "https://660e.com";
+    String copyRightTheftUrl = "http://jx.618g.com/?url=";
+    String copyRightTheftDomain = "http://jx.618g.com";
     private static final String TAG = "MainActivity";
     private WebView webView;
     private DrawerLayout drawerLayout;
@@ -220,6 +221,17 @@ public class MainActivity extends AppCompatActivity {
                                     int position, long id) {
                 if (drawerLayout.isDrawerOpen(Gravity.END)) {//如果此时抽屉窗口打开，就给他关闭
                     drawerLayout.closeDrawer(Gravity.END);
+                }
+                if (position == mListData.size() -1){
+                    if (isMobileUA){
+                        webView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36");
+                        webView.reload();
+                    }else{
+                        webView.getSettings().setUserAgentString("");
+                        webView.reload();
+                    }
+                    isMobileUA = !isMobileUA;
+                    return;
                 }
 
                 copyRightTheftUrl = mListData.get(position).getUrl();

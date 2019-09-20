@@ -39,19 +39,23 @@
   ],
   "list": [
     {
-      "name": "618g",
+      "name": "http://jx.618g.com",
       "url": "http://jx.618g.com/?url="
     },
     {
-      "name": "xyingyu",
+      "name": "http://api.xyingyu.com",
       "url": "http://api.xyingyu.com/?url="
     },
     {
-      "name": "greatchina56",
+      "name": "http://api.greatchina56.com",
       "url": "http://api.greatchina56.com/?url="
     },
     {
-      "name": "baiyug",
+      "name": "http://api.baiyug.vip",
+      "url": "http://api.baiyug.vip/index.php?url="
+    },
+    {
+      "name": "点击切换pc/移动端页面",
       "url": "http://api.baiyug.vip/index.php?url="
     }
   ]
